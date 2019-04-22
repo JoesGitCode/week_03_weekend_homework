@@ -30,9 +30,31 @@ attr_accessor :funds, :name
     SqlRunner.run(sql, values)
   end
 
+  def display_films()
+    sql = "SELECT films.* FROM films
+    INNER JOIN
+    tickets ON tickets.film_id = films.id
+    WHERE films.id = $1;"
+    values = [@id]
+    films = SqlRunner.run(sql, values)
+    return Film.map_items(films)
+  end
+
+  def self.select_all()
+    sql = "SELECT * FROM customers"
+    customers = SqlRunner.run(sql)
+    return customers.map { |customer| Customer.new(customer) }
+  end
+
   def self.delete_all()
     sql = "DELETE FROM customers"
     SqlRunner.run(sql)
   end
+
+  def self.map_items(data)
+    result = data.map{|film| Film.new(film)}
+    return result
+  end
+
 
 end
